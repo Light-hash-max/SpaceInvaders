@@ -10,6 +10,8 @@ public class FireGiftMode : MonoBehaviour
     private GiftInfo _currentGift = default;
     private GameObject _currentFireMode = default;
 
+    private Dictionary<GiftInfo, GameObject> _fireGiftsDictionary = new Dictionary<GiftInfo, GameObject>();
+
     public void ChangeFireMode(GiftInfo giftInfo)
     {
         if (_defaultMode.activeSelf)
@@ -23,10 +25,22 @@ public class FireGiftMode : MonoBehaviour
             {
                 return;
             }
+            else
+            {
+                _fireGiftsDictionary[_currentGift].SetActive(false);
+
+                if (_fireGiftsDictionary.TryGetValue(giftInfo, out _currentFireMode))
+                {
+                    _currentGift = giftInfo;
+                    _currentFireMode.SetActive(true);
+                    return;
+                }
+            }
         }
 
-        Destroy(_currentFireMode);
+        _currentGift = giftInfo;
         _currentFireMode = Instantiate(giftInfo.Bullet, transform);
+        _fireGiftsDictionary.Add(giftInfo, _currentFireMode);
 
     }
 }
